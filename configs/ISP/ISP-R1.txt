@@ -1,0 +1,21 @@
+! ISP-R1 Configuration
+!
+hostname ISP-R1
+!
+no ip domain-lookup
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface Ethernet0/0
+ description Ligacao para RSC-FW
+ ip address 10.20.95.237 255.255.255.252
+!
+interface Ethernet0/1
+ description Ligacao para CID-FW
+ ip address 10.30.95.241 255.255.255.252
+!
+! Rota estatica para a rede do ITC
+ip route 194.65.240.0 255.255.240.0 10.20.95.238
+!
+end

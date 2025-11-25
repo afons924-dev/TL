@@ -1,0 +1,52 @@
+! ECMA-R2 (Internal Router with Router-on-a-Stick)
+!
+hostname ECMA-R2
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao ECMA-R2 #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+! --- Interfaces ---
+interface Ethernet0/0
+ description Ligacao para ECMA-R1
+ ip address 10.100.14.10 255.255.255.252
+!
+! --- Router-on-a-Stick Interface ---
+interface GigabitEthernet1/0
+ description Ligacao Trunk para ECMA-SW2
+ no ip address
+!
+interface GigabitEthernet1/0.114
+ description Gateway para WiFi_Visitantes
+ encapsulation dot1Q 114
+ ip address 194.65.246.225 255.255.255.240
+!
+interface GigabitEthernet1/0.115
+ description Gateway para Gestao
+ encapsulation dot1Q 115
+ ip address 194.65.246.241 255.255.255.240
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 5.5.5.3
+ network 10.100.14.8 0.0.0.3 area 0
+ ! Anunciar as redes do Router-on-a-Stick
+ network 194.65.246.224 0.0.0.15 area 0
+ network 194.65.246.240 0.0.0.15 area 0
+ area 0 authentication message-digest
+!
+interface Ethernet0/0
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

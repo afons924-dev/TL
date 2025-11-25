@@ -1,0 +1,3 @@
+! Configuration for CML-SW3
+hostname CML-SW3
+!

@@ -1,0 +1,31 @@
+! CCS-SW2 (Access Switch for Router-on-a-Stick)
+!
+hostname CCS-SW2
+!
+spanning-tree mode rstp
+!
+! --- VLAN Configuration ---
+vlan 114
+ name WiFi_Visitantes
+vlan 115
+ name Gestao
+!
+! --- Port Configuration ---
+! Trunk Port to CCS-R2
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+! Access Port Example for VLAN 114
+interface Ethernet0/1
+ switchport mode access
+ switchport access vlan 114
+ spanning-tree portfast
+!
+! Access Port Example for VLAN 115
+interface Ethernet0/2
+ switchport mode access
+ switchport access vlan 115
+ spanning-tree portfast
+!
+end

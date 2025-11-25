@@ -1,0 +1,89 @@
+! RSC-GW2 (MPLS & PPPoFR Hub) Configuration
+!
+hostname RSC-GW2
+!
+mpls label protocol ldp
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao RSC-GW2 #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+!
+interface Ethernet0/0
+ description Ligacao para RSC-Core1
+ ip address 10.100.10.14 255.255.255.252
+!
+interface Ethernet0/1
+ description Ligacao para RSC-Core2
+ ip address 10.100.10.13 255.255.255.252
+!
+! --- Ligacao MPLS para o CID ---
+interface Serial1/0
+ description Ligacao MPLS para CID-GW
+ ip address 10.100.3.1 255.255.255.252
+ mpls ip
+ xconnect 10.100.3.2 410 encapsulation mpls
+!
+! --- Ligacoes Multilink PPPoFR para ECMA e BCRD ---
+interface Multilink1
+ description Bundle para ECMA-GW
+ ip address 10.100.4.1 255.255.255.252
+ ppp multilink
+ ppp multilink group 1
+!
+interface Multilink2
+ description Bundle para BCRD-GW
+ ip address 10.100.5.1 255.255.255.252
+ ppp multilink
+ ppp multilink group 2
+!
+interface Serial1/1
+ description Parte do Multilink para ECMA
+ no ip address
+ encapsulation ppp
+ ppp multilink
+ ppp multilink group 1
+!
+interface Serial1/2
+ description Parte do Multilink para BCRD
+ no ip address
+ encapsulation ppp
+ ppp multilink
+ ppp multilink group 2
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.5
+ network 10.100.3.0 0.0.0.3 area 0
+ network 10.100.4.0 0.0.0.3 area 0
+ network 10.100.5.0 0.0.0.3 area 0
+ network 10.100.10.12 0.0.0.3 area 0
+ area 0 authentication message-digest
+!
+interface Ethernet0/0
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Ethernet0/1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Serial1/0
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Multilink1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Multilink2
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

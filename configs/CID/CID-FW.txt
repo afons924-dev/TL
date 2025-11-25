@@ -1,0 +1,60 @@
+! CID-FW (Secondary Firewall - Corrected Failover)
+!
+hostname CID-FW
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao CID-FW #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+! --- NAT Configuration ---
+ip nat pool NAT_POOL_BACKUP 10.30.95.242 10.30.95.242 prefix-length 30
+ip nat inside source list NAT_ACL pool NAT_POOL_BACKUP overload
+!
+! --- Interfaces ---
+interface Ethernet0/0
+ description Ligacao para ISP-R1 (Backup)
+ ip address 10.30.95.242 255.255.255.252
+ ip nat outside
+!
+interface Ethernet0/1
+ description Ligacao para a rede interna (CID-GW)
+ ip address 10.100.13.5 255.255.255.252
+ ip nat inside
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 2.2.2.8
+ network 10.100.13.4 0.0.0.3 area 0
+ area 0 authentication message-digest
+ ! Redistribute the static default route with a high metric
+ default-information originate metric 200 metric-type 2 route-map FAILOVER_RM
+!
+interface Ethernet0/1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+! --- Static Route for Backup Internet ---
+ip route 0.0.0.0 0.0.0.0 10.30.95.241
+!
+! --- Route-Map to control redistribution ---
+route-map FAILOVER_RM permit 10
+ match ip address ACL_DEFAULT_ROUTE
+!
+! --- ACLs ---
+ip access-list standard NAT_ACL
+ permit 194.65.240.0 0.0.15.255
+!
+ip access-list standard ACL_DEFAULT_ROUTE
+ permit 0.0.0.0
+!
+end

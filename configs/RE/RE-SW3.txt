@@ -1,0 +1,3 @@
+! Configuration for RE-SW3
+hostname RE-SW3
+!

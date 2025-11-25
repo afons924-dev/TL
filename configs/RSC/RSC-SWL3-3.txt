@@ -1,0 +1,35 @@
+! RSC-SWL3-3 (Layer 3 Switch) Cleaned Configuration
+!
+hostname RSC-SWL3-3
+!
+ip routing
+!
+spanning-tree mode rstp
+!
+! --- VLAN Configuration ---
+vlan 10
+ name Servidores
+!
+vlan 20
+ name Administracao
+!
+! --- SVI (Inter-VLAN Routing) Configuration ---
+interface Vlan10
+ ip address 194.65.240.4 255.255.255.0
+ standby 10 ip 194.65.240.1
+ standby 10 priority 90
+ standby 10 preempt
+!
+interface Vlan20
+ ip address 194.65.241.4 255.255.255.0
+ standby 20 ip 194.65.241.1
+ standby 20 priority 90
+ standby 20 preempt
+!
+! --- Port Configuration ---
+! Trunk Port to other switches
+interface GigabitEthernet1/0
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+end

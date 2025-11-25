@@ -1,0 +1,54 @@
+! CCS-SWL3-1 (Layer 3 Switch) Configuration
+!
+hostname CCS-SWL3-1
+!
+ip routing
+!
+spanning-tree mode rstp
+!
+! --- VLAN Configuration ---
+vlan 110
+ name Laboratorios_A
+vlan 111
+ name Laboratorios_B
+vlan 112
+ name Gabinetes
+vlan 113
+ name WiFi_Alunos
+vlan 114
+ name WiFi_Visitantes
+vlan 115
+ name Gestao
+!
+! --- SVI (Inter-VLAN Routing) Configuration ---
+interface Vlan110
+ ip address 194.65.245.1 255.255.255.192
+!
+interface Vlan111
+ ip address 194.65.245.65 255.255.255.192
+!
+interface Vlan112
+ ip address 194.65.245.129 255.255.255.192
+!
+interface Vlan113
+ ip address 194.65.245.193 255.255.255.224
+!
+interface Vlan114
+ ip address 194.65.245.225 255.255.255.240
+!
+interface Vlan115
+ ip address 194.65.245.241 255.255.255.240
+!
+! --- OSPF Configuration for LAN routing ---
+router ospf 1
+ router-id 4.4.4.1
+ network 194.65.245.0 0.0.0.255 area 0
+ area 0 authentication message-digest
+!
+! --- Uplink to CCS-GW ---
+interface GigabitEthernet1/0
+ no switchport
+ ip address 10.100.12.2 255.255.255.252
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

@@ -1,0 +1,3 @@
+! Configuration for ECMA-SW3
+hostname ECMA-SW3
+!
