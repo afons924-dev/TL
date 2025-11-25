@@ -1,0 +1,3 @@
+! Configuration for BCRD-SW3
+hostname BCRD-SW3
+!

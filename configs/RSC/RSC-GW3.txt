@@ -1,0 +1,64 @@
+! RSC-GW3 (Q-in-Q Hub Router) Configuration
+!
+hostname RSC-GW3
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao RSC-GW3 #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+! --- Uplinks to Core Network ---
+interface Ethernet0/0
+ description Ligacao para RSC-Core1
+ ip address 10.100.10.17 255.255.255.252
+!
+interface Ethernet0/1
+ description Ligacao para RSC-Core2
+ ip address 10.100.10.18 255.255.255.252
+!
+! --- Q-in-Q Trunk Interface ---
+interface GigabitEthernet1/0
+ description Ligacao para RSC-SW-QinQ
+ no ip address
+!
+! Subinterface for CML traffic (Transport VLAN 100, Customer VLAN 610)
+interface GigabitEthernet1/0.100
+ encapsulation dot1q 100 second-dot1q 610
+ ip address 10.100.8.1 255.255.255.252
+!
+! Subinterface for RE traffic (Transport VLAN 200, Customer VLAN 710)
+interface GigabitEthernet1/0.200
+ encapsulation dot1q 200 second-dot1q 710
+ ip address 10.100.9.1 255.255.255.252
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.6
+ network 10.100.8.0 0.0.0.3 area 0
+ network 10.100.9.0 0.0.0.3 area 0
+ network 10.100.10.16 0.0.0.7 area 0
+ area 0 authentication message-digest
+!
+interface Ethernet0/0
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Ethernet0/1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface GigabitEthernet1/0.100
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface GigabitEthernet1/0.200
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

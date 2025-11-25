@@ -1,0 +1,3 @@
+! Configuration for CCS-SW3
+hostname CCS-SW3
+!

@@ -1,0 +1,3 @@
+! Configuration for CE-SW3
+hostname CE-SW3
+!

@@ -1,0 +1,80 @@
+! RSC-SWL3-1 (Layer 3 Switch) Configuration
+!
+hostname RSC-SWL3-1
+!
+ip routing
+!
+spanning-tree mode rstp
+!
+! --- VLAN and PVLAN Configuration ---
+vlan 10
+ name Servidores
+!
+vlan 20
+ name Administracao
+!
+vlan 30
+ name Financas-Primary
+ private-vlan primary
+ private-vlan association 31-32
+!
+vlan 31
+ name Financas-Isolated
+ private-vlan isolated
+!
+vlan 32
+ name Financas-Community
+ private-vlan community
+!
+vlan 40
+ name RH
+!
+vlan 50
+ name Staff_A
+!
+! --- SVI (Inter-VLAN Routing) Configuration ---
+interface Vlan10
+ ip address 194.65.240.2 255.255.255.0
+ standby 10 ip 194.65.240.1
+ standby 10 priority 110
+ standby 10 preempt
+!
+interface Vlan20
+ ip address 194.65.241.2 255.255.255.0
+ standby 20 ip 194.65.241.1
+ standby 20 priority 110
+ standby 20 preempt
+!
+interface Vlan30
+ ip address 194.65.242.1 255.255.255.128
+ ! Mapping PVLANs to the SVI
+ private-vlan mapping 31-32
+!
+interface Vlan40
+ ip address 194.65.242.129 255.255.255.128
+!
+interface Vlan50
+ ip address 194.65.243.1 255.255.255.224
+!
+! --- Port Configuration ---
+! Port to Router (Promiscuous Port)
+interface Ethernet0/0
+ switchport mode private-vlan promiscuous
+ switchport private-vlan mapping 30 31-32
+!
+! Port for Isolated Host
+interface Ethernet0/1
+ switchport mode private-vlan host
+ switchport private-vlan host-association 30 31
+!
+! Port for Community Host
+interface Ethernet0/2
+ switchport mode private-vlan host
+ switchport private-vlan host-association 30 32
+!
+! Trunk Port to other switches
+interface GigabitEthernet1/0
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+end

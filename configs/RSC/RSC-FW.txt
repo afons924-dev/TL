@@ -1,0 +1,51 @@
+! RSC-FW Configuration
+!
+hostname RSC-FW
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao RSC-FW #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+!
+ip nat pool NAT_POOL 10.20.95.238 10.20.95.238 prefix-length 30
+ip nat inside source list NAT_ACL pool NAT_POOL overload
+!
+interface Ethernet0/0
+ description Ligacao para ISP-R1
+ ip address 10.20.95.238 255.255.255.252
+ ip nat outside
+!
+interface Ethernet0/1
+ description Ligacao para a rede interna (RSC-Core1)
+ ip address 10.100.10.1 255.255.255.252
+ ip nat inside
+!
+! Rota estatica default para a Internet
+ip route 0.0.0.0 0.0.0.0 10.20.95.237
+!
+! ACL para permitir que a rede interna aceda a Internet
+ip access-list standard NAT_ACL
+ permit 194.65.240.0 0.0.15.255
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.1
+ network 10.100.10.0 0.0.0.3 area 0
+ default-information originate
+ area 0 authentication message-digest
+!
+interface Ethernet0/1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end
