@@ -1,0 +1,42 @@
+! RSC-SW2 (Access Layer Switch) Configuration
+!
+hostname RSC-SW2
+!
+spanning-tree mode rstp
+spanning-tree portfast bpduguard default
+spanning-tree guard root
+spanning-tree guard loop
+!
+! --- VLAN Configuration ---
+vlan 10
+ name Servidores
+!
+vlan 20
+ name Administracao
+!
+! --- Port Configuration ---
+! Trunk Port to L3 Switches
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+! Access Port Example
+interface Ethernet0/1
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+!
+interface Ethernet0/2
+ switchport mode access
+ switchport access vlan 20
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+!
+end

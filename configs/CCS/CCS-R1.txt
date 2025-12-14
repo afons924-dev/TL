@@ -1,0 +1,42 @@
+! CCS-R1 (Internal Router) Configuration
+!
+hostname CCS-R1
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao CCS-R1 #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+! --- Interfaces ---
+interface Ethernet0/0
+ description Ligacao para CCS-SWL3-1
+ ip address 10.100.12.5 255.255.255.252
+!
+interface Ethernet0/1
+ description Ligacao para CCS-R2
+ ip address 10.100.12.9 255.255.255.252
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 3.3.3.2
+ network 10.100.12.4 0.0.0.3 area 0
+ network 10.100.12.8 0.0.0.3 area 0
+ area 0 authentication message-digest
+!
+interface Ethernet0/0
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Ethernet0/1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

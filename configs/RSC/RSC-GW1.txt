@@ -1,0 +1,64 @@
+! RSC-GW1 (Frame Relay Hub) Configuration
+!
+hostname RSC-GW1
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao RSC-GW1 #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+line vty 0
+ transport input ssh
+ login local
+!
+!
+interface Ethernet0/0
+ description Ligacao para RSC-Core1
+ ip address 10.100.10.10 255.255.255.252
+!
+interface Ethernet0/1
+ description Ligacao para RSC-Core2
+ ip address 10.100.10.9 255.255.255.252
+!
+interface Serial1/0
+ description Ligacao Frame Relay para CE e CCS
+ encapsulation frame-relay
+ ! no frame-relay inverse-arp
+!
+interface Serial1/0.101 point-to-point
+ description Ligacao para CE-GW (DLCI 101)
+ ip address 10.100.1.1 255.255.255.252
+ frame-relay interface-dlci 101
+!
+interface Serial1/0.102 point-to-point
+ description Ligacao para CCS-GW (DLCI 102)
+ ip address 10.100.2.1 255.255.255.252
+ frame-relay interface-dlci 102
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.4
+ network 10.100.1.0 0.0.0.3 area 0
+ network 10.100.2.0 0.0.0.3 area 0
+ network 10.100.10.8 0.0.0.3 area 0
+ area 0 authentication message-digest
+!
+interface Ethernet0/0
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Ethernet0/1
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Serial1/0.101
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Serial1/0.102
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

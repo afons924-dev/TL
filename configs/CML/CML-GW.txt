@@ -1,0 +1,39 @@
+! CML-GW (Q-in-Q Spoke - Corrected)
+!
+hostname CML-GW
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao CML-GW #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+! --- WAN Interface ---
+interface Ethernet1/0
+ description Ligacao para RSC-SW-QinQ
+ no ip address
+!
+! Subinterface with Customer VLAN tag
+interface Ethernet1/0.610
+ encapsulation dot1Q 610
+ ip address 10.100.6.2 255.255.255.252
+!
+! --- LAN Interface ---
+interface Ethernet0/0
+ description Ligacao para a rede interna do CML
+ ip address 10.100.16.1 255.255.255.252
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 7.7.7.1
+ network 10.100.6.0 0.0.0.3 area 0
+ network 10.100.16.0 0.0.0.3 area 0
+ network 194.65.249.0 0.0.0.255 area 0
+ area 0 authentication message-digest
+!
+end

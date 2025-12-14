@@ -1,0 +1,29 @@
+! RSC-SW-QinQ (Q-in-Q Tunneling Switch) Configuration
+!
+hostname RSC-SW-QinQ
+!
+spanning-tree mode rstp
+!
+! --- VLAN Configuration ---
+vlan 100
+ name Transporte_CML
+vlan 200
+ name Transporte_RE
+!
+! --- Port Configuration ---
+! Port to CML (Customer Edge)
+interface Ethernet0/0
+ switchport access vlan 100 ! Assigns the transport VLAN tag
+ switchport mode dot1q-tunnel
+!
+! Port to RE (Customer Edge)
+interface Ethernet0/1
+ switchport access vlan 200 ! Assigns the transport VLAN tag
+ switchport mode dot1q-tunnel
+!
+! Trunk Port to RSC-GW3 (Provider Edge)
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+end

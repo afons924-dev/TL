@@ -1,0 +1,42 @@
+! ECMA-GW (PPPoFR - Corrected)
+!
+hostname ECMA-GW
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao ECMA-GW #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username RSC-GW2 password 0 My!S3cr3t!P4ss
+!
+! --- Virtual Template for PPPoFR ---
+interface Virtual-Template1
+ ip address 10.100.4.2 255.255.255.252
+ ppp authentication chap
+!
+! --- Physical Interface ---
+interface Serial1/1
+ description Ligacao Frame-Relay para PPPoFR
+ encapsulation frame-relay
+!
+! --- Frame Relay DLCI Mapping to PPP ---
+connect ppp-ecma Serial1/1 401 ppp virtual-template 1
+!
+! --- LAN Interface ---
+interface Ethernet0/0
+ description Ligacao para a rede interna da ECMA
+ ip address 10.100.14.1 255.255.255.252
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 4.4.4.1
+ network 10.100.4.0 0.0.0.3 area 0
+ network 10.100.14.0 0.0.0.3 area 0
+ network 194.65.246.0 0.0.0.255 area 0
+ area 0 authentication message-digest
+!
+end

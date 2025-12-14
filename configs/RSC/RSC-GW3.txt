@@ -1,0 +1,42 @@
+! RSC-GW3 (Q-in-Q Hub - Corrected IP)
+!
+hostname RSC-GW3
+!
+no ip domain-lookup
+!
+! --- Security Policies ---
+service password-encryption
+banner motd # Bem-vindo ao RSC-GW3 #
+!
+ip domain-name itc.local
+crypto key generate rsa modulus 1024
+!
+username admin privilege 15 secret My!Adm1n!Pass
+!
+! --- Interfaces ---
+interface Ethernet0/0
+ description Ligacao para RSC-Core1
+ ip address 10.100.10.17 255.255.255.252
+!
+interface GigabitEthernet1/0
+ description Trunk para SW-QinQ
+ no ip address
+!
+! --- Q-in-Q Subinterfaces ---
+interface GigabitEthernet1/0.100
+ encapsulation dot1q 100 second-dot1q 610
+ ip address 10.100.6.1 255.255.255.252
+!
+interface GigabitEthernet1/0.200
+ encapsulation dot1q 200 second-dot1q 710
+ ip address 10.100.7.1 255.255.255.252
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.6
+ network 10.100.6.0 0.0.0.3 area 0
+ network 10.100.7.0 0.0.0.3 area 0
+ network 10.100.10.16 0.0.0.3 area 0
+ area 0 authentication message-digest
+!
+end

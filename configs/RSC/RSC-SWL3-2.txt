@@ -1,0 +1,50 @@
+! RSC-SWL3-2 (Layer 3 Switch) Corrected Configuration
+!
+hostname RSC-SWL3-2
+!
+ip routing
+!
+spanning-tree mode rstp
+!
+! --- VLAN Configuration ---
+vlan 10
+ name Servidores
+vlan 20
+ name Administracao
+vlan 99
+ name OSPF_Transit
+!
+! --- SVI (Inter-VLAN Routing) Configuration ---
+interface Vlan10
+ ip address 194.65.240.3 255.255.255.0
+ standby 10 ip 194.65.240.1
+ standby 10 priority 100
+ standby 10 preempt
+!
+interface Vlan20
+ ip address 194.65.241.3 255.255.255.0
+ standby 20 ip 194.65.241.1
+ standby 20 priority 100
+ standby 20 preempt
+!
+interface Vlan99
+ description Uplink para Core Routers
+ ip address 10.100.10.25 255.255.255.252
+!
+! --- OSPF Configuration ---
+router ospf 1
+ router-id 1.1.1.11
+ network 10.100.10.24 0.0.0.3 area 0
+ network 194.65.240.0 0.0.3.255 area 0
+ area 0 authentication message-digest
+!
+interface Vlan99
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+! --- Port Configuration ---
+! Trunk Port to other switches
+interface GigabitEthernet1/0
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+end

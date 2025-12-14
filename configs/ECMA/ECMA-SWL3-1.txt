@@ -1,0 +1,48 @@
+! ECMA-SWL3-1 (Layer 3 Switch) Configuration
+!
+hostname ECMA-SWL3-1
+!
+ip routing
+!
+spanning-tree mode rstp
+!
+! --- VLAN Configuration ---
+vlan 110
+ name Laboratorios_A
+vlan 111
+ name Laboratorios_B
+vlan 112
+ name Gabinetes
+vlan 113
+ name WiFi_Alunos
+vlan 114
+ name WiFi_Visitantes
+vlan 115
+ name Gestao
+!
+! --- SVI (Inter-VLAN Routing) Configuration ---
+interface Vlan110
+ ip address 194.65.246.1 255.255.255.192
+!
+interface Vlan111
+ ip address 194.65.246.65 255.255.255.192
+!
+interface Vlan112
+ ip address 194.65.246.129 255.255.255.192
+!
+interface Vlan113
+ ip address 194.65.246.193 255.255.255.224
+!
+! --- OSPF Configuration for LAN routing ---
+router ospf 1
+ router-id 5.5.5.1
+ network 194.65.246.0 0.0.0.255 area 0
+ area 0 authentication message-digest
+!
+! --- Uplink to ECMA-GW ---
+interface GigabitEthernet1/0
+ no switchport
+ ip address 10.100.14.2 255.255.255.252
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+end

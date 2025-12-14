@@ -1,0 +1,42 @@
+! CID-SW1 (Access Layer Switch) Configuration
+!
+hostname CID-SW1
+!
+spanning-tree mode rstp
+spanning-tree portfast bpduguard default
+spanning-tree guard root
+spanning-tree guard loop
+!
+! --- VLAN Configuration ---
+vlan 110
+ name Laboratorios_A
+vlan 111
+ name Laboratorios_B
+!
+! --- Port Configuration ---
+! Trunk Port to CID-SWL3-1
+interface GigabitEthernet0/1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+!
+! Access Port Example for VLAN 110
+interface Ethernet0/1
+ switchport mode access
+ switchport access vlan 110
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+!
+! Access Port Example for VLAN 111
+interface Ethernet0/2
+ switchport mode access
+ switchport access vlan 111
+ switchport port-security
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+ switchport port-security violation restrict
+ spanning-tree portfast
+!
+end
