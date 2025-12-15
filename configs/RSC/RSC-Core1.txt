@@ -37,6 +37,12 @@ interface Ethernet0/3
  description Ligacao para RSC-GW2
  ip address 10.100.10.13 255.255.255.252
 !
+interface Ethernet0/3.13
+ description Gateway para CID (via AToM)
+ encapsulation dot1q 13
+ ip address 10.100.13.1 255.255.255.252
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
 interface Ethernet1/0
  description Ligacao para RSC-GW3
  ip address 10.100.10.17 255.255.255.252
@@ -49,6 +55,7 @@ interface Ethernet1/1
 router ospf 1
  router-id 1.1.1.2
  network 10.100.10.0 0.0.0.255 area 0
+ network 10.100.13.0 0.0.0.3 area 0
  area 0 authentication message-digest
 !
 interface Ethernet0/0
@@ -61,6 +68,9 @@ interface Ethernet0/2
  ip ospf message-digest-key 1 md5 My!S3cur3!K3y
 !
 interface Ethernet0/3
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+interface Ethernet0/3.13
  ip ospf message-digest-key 1 md5 My!S3cur3!K3y
 !
 interface Ethernet1/0

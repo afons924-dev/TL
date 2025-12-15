@@ -50,4 +50,18 @@ interface Ethernet0/2
  switchport port-security violation restrict
  spanning-tree portfast
 !
+
+!
+interface Ethernet0/3
+ description PVLAN Community Host (Financas)
+ switchport mode private-vlan host
+ switchport private-vlan host-association 30 31
+ spanning-tree portfast
+!
+interface Ethernet1/0
+ description PVLAN Isolated Host (Financas)
+ switchport mode private-vlan host
+ switchport private-vlan host-association 30 32
+ spanning-tree portfast
+!
 end

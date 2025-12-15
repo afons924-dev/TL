@@ -38,7 +38,7 @@ interface Loopback0
 !
 interface Ethernet0/0
  description Ligacao para RSC-Core1
- ip address 10.100.10.13 255.255.255.252
+ ip address 10.100.10.14 255.255.255.252
 !
 interface Ethernet0/0.13
  description Tunnel Endpoint for CID
