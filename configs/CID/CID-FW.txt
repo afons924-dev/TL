@@ -17,6 +17,9 @@ line vty 0
  transport input ssh
  login local
 !
+line vty 1 15
+ transport input none
+!
 ! --- NAT Configuration ---
 ip nat pool NAT_POOL_BACKUP 10.30.95.242 10.30.95.242 prefix-length 30
 ip nat inside source list NAT_ACL pool NAT_POOL_BACKUP overload

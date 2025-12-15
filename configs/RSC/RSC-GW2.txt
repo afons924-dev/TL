@@ -33,9 +33,17 @@ interface Virtual-Template5
  ppp authentication chap
 !
 ! --- Physical Interfaces ---
+interface Loopback0
+ ip address 1.1.1.5 255.255.255.255
+!
 interface Ethernet0/0
  description Ligacao para RSC-Core1
  ip address 10.100.10.13 255.255.255.252
+!
+interface Ethernet0/0.13
+ description Tunnel Endpoint for CID
+ encapsulation dot1q 13
+ xconnect 5.5.5.1 123 encapsulation mpls
 !
 interface Serial1/0
  description MPLS para CID-GW
@@ -58,6 +66,7 @@ router ospf 1
  network 10.100.4.0 0.0.0.3 area 0
  network 10.100.5.0 0.0.0.3 area 0
  network 10.100.10.12 0.0.0.3 area 0
+ network 1.1.1.5 0.0.0.0 area 0
  area 0 authentication message-digest
 !
 end

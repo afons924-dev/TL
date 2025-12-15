@@ -4,10 +4,21 @@ hostname RSC-SW2
 !
 spanning-tree mode rstp
 spanning-tree portfast bpduguard default
-spanning-tree guard root
-spanning-tree guard loop
+spanning-tree loopguard default
 !
 ! --- VLAN Configuration ---
+!
+vlan 30
+ private-vlan primary
+ private-vlan association 31-32
+!
+vlan 31
+ private-vlan community
+!
+vlan 32
+ private-vlan isolated
+!
+
 vlan 10
  name Servidores
 !

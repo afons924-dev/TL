@@ -4,8 +4,7 @@ hostname CE-SW1
 !
 spanning-tree mode rstp
 spanning-tree portfast bpduguard default
-spanning-tree guard root
-spanning-tree guard loop
+spanning-tree loopguard default
 !
 ! --- VLAN Configuration ---
 vlan 110

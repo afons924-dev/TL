@@ -17,6 +17,9 @@ line vty 0
  transport input ssh
  login local
 !
+line vty 1 15
+ transport input none
+!
 !
 interface Serial1/0
  description Ligacao Frame Relay para RSC-GW1

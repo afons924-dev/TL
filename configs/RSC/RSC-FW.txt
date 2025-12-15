@@ -17,6 +17,9 @@ line vty 0
  transport input ssh
  login local
 !
+line vty 1 15
+ transport input none
+!
 !
 ip nat pool NAT_POOL 10.20.95.238 10.20.95.238 prefix-length 30
 ip nat inside source list NAT_ACL pool NAT_POOL overload

@@ -17,6 +17,9 @@ line vty 0
  transport input ssh
  login local
 !
+line vty 1 15
+ transport input none
+!
 !
 interface Ethernet0/0
  description Ligacao para RSC-Core1
@@ -29,7 +32,7 @@ interface Ethernet0/1
 interface Serial1/0
  description Ligacao Frame Relay para CE e CCS
  encapsulation frame-relay
- ! no frame-relay inverse-arp
+ no frame-relay inverse-arp
 !
 interface Serial1/0.101 point-to-point
  description Ligacao para CE-GW (DLCI 101)

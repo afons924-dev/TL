@@ -37,12 +37,20 @@ interface Vlan113
 router ospf 1
  router-id 5.5.5.1
  network 194.65.246.0 0.0.0.255 area 0
+ network 10.100.14.0 0.0.0.255 area 0
  area 0 authentication message-digest
 !
 ! --- Uplink to ECMA-GW ---
 interface GigabitEthernet1/0
  no switchport
  ip address 10.100.14.2 255.255.255.252
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+!
+! --- Link to Internal Router (R1) ---
+interface GigabitEthernet1/1
+ no switchport
+ ip address 10.100.14.6 255.255.255.252
  ip ospf message-digest-key 1 md5 My!S3cur3!K3y
 !
 end

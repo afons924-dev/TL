@@ -17,6 +17,9 @@ line vty 0
  transport input ssh
  login local
 !
+line vty 1 15
+ transport input none
+!
 !
 interface Ethernet0/0
  description Ligacao para RSC-Core1

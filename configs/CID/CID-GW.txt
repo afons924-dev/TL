@@ -14,6 +14,9 @@ crypto key generate rsa modulus 1024
 username admin privilege 15 secret My!Adm1n!Pass
 !
 ! --- Interfaces ---
+interface Loopback0
+ ip address 5.5.5.1 255.255.255.255
+!
 interface Serial1/0
  description Ligacao MPLS para RSC-GW2
  encapsulation ppp
@@ -21,14 +24,15 @@ interface Serial1/0
  ip address 10.100.3.2 255.255.255.252
 !
 interface Ethernet0/0
- description Ligacao para a rede interna do CID
- ip address 10.100.13.1 255.255.255.252
+ description Ligacao para a rede interna do CID (Tunneled)
+ no ip address
+ xconnect 1.1.1.5 123 encapsulation mpls
 !
 ! --- OSPF Configuration ---
 router ospf 1
  router-id 5.5.5.1
  network 10.100.3.0 0.0.0.3 area 0
- network 10.100.13.0 0.0.0.3 area 0
+ network 5.5.5.1 0.0.0.0 area 0
  network 194.65.247.0 0.0.0.255 area 0
  area 0 authentication message-digest
 !
