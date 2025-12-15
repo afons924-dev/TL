@@ -61,4 +61,7 @@ interface Serial1/0.101
 interface Serial1/0.102
  ip ospf message-digest-key 1 md5 My!S3cur3!K3y
 !
+line vty 1 15
+ transport input none
+!
 end

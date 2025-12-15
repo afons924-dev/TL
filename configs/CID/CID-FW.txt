@@ -57,4 +57,7 @@ ip access-list standard NAT_ACL
 ip access-list standard ACL_DEFAULT_ROUTE
  permit 0.0.0.0
 !
+line vty 1 15
+ transport input none
+!
 end

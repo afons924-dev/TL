@@ -39,4 +39,7 @@ router ospf 1
  network 10.100.10.16 0.0.0.3 area 0
  area 0 authentication message-digest
 !
+line vty 1 15
+ transport input none
+!
 end

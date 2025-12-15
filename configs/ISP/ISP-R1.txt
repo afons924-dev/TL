@@ -20,4 +20,7 @@ ip route 194.65.240.0 255.255.240.0 10.20.95.238
 ! Rota estatica flutuante para a rede do ITC (via CID)
 ip route 194.65.240.0 255.255.240.0 10.30.95.242 200
 !
+line vty 1 15
+ transport input none
+!
 end

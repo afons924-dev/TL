@@ -28,4 +28,7 @@ interface Ethernet0/2
  switchport access vlan 115
  spanning-tree portfast
 !
+line vty 1 15
+ transport input none
+!
 end

@@ -4,8 +4,7 @@ hostname RSC-SW2
 !
 spanning-tree mode rstp
 spanning-tree portfast bpduguard default
-spanning-tree guard root
-spanning-tree guard loop
+spanning-tree loopguard default
 !
 ! --- VLAN Configuration ---
 vlan 10
@@ -21,8 +20,22 @@ interface GigabitEthernet0/1
  switchport trunk encapsulation dot1q
 !
 ! Access Port Example
+vlan 30
+ name Financas-Primary
+ private-vlan primary
+ private-vlan association 31-32
+!
+vlan 31
+ name Financas-Isolated
+ private-vlan isolated
+!
+vlan 32
+ name Financas-Community
+ private-vlan community
+!
 interface Ethernet0/1
  switchport mode access
+ spanning-tree guard root
  switchport access vlan 20
  switchport port-security
  switchport port-security maximum 2
@@ -30,13 +43,35 @@ interface Ethernet0/1
  switchport port-security violation restrict
  spanning-tree portfast
 !
+vlan 30
+ name Financas-Primary
+ private-vlan primary
+ private-vlan association 31-32
+!
+vlan 31
+ name Financas-Isolated
+ private-vlan isolated
+!
+vlan 32
+ name Financas-Community
+ private-vlan community
+!
 interface Ethernet0/2
  switchport mode access
+ spanning-tree guard root
  switchport access vlan 20
  switchport port-security
  switchport port-security maximum 2
  switchport port-security mac-address sticky
  switchport port-security violation restrict
  spanning-tree portfast
+!
+interface Ethernet0/3
+ switchport mode private-vlan host
+ switchport private-vlan host-association 30 31
+ spanning-tree portfast
+!
+line vty 1 15
+ transport input none
 !
 end

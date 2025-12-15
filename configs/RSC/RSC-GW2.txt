@@ -1,8 +1,10 @@
-! RSC-GW2 (MPLS & PPPoFR Hub - Corrected)
+! RSC-GW2 (MPLS AToM Hub - Corrected)
 !
 hostname RSC-GW2
 !
 no ip domain-lookup
+!
+mpls label protocol ldp
 !
 ! --- Security Policies ---
 service password-encryption
@@ -11,53 +13,37 @@ banner motd # Bem-vindo ao RSC-GW2 #
 ip domain-name itc.local
 crypto key generate rsa modulus 1024
 !
-username admin privilege 15 secret My!Adm1n!Pass
+! --- AToM L2VPN Configuration ---
+pseudowire-class AToM-PW
+ encapsulation mpls
 !
-! --- AAA for PPP ---
-aaa new-model
-aaa authentication ppp default local
-!
-! --- Usernames for PPP Authentication ---
-username ECMA-GW password 0 My!S3cr3t!P4ss
-username BCRD-GW password 0 My!S3cr3t!P4ss
-!
-! --- Virtual Templates for PPPoFR ---
-interface Virtual-Template4
- description PPPoFR para ECMA-GW
- ip address 10.100.4.1 255.255.255.252
- ppp authentication chap
-!
-interface Virtual-Template5
- description PPPoFR para BCRD-GW
- ip address 10.100.5.1 255.255.255.252
- ppp authentication chap
-!
-! --- Physical Interfaces ---
+! --- Interfaces ---
 interface Ethernet0/0
  description Ligacao para RSC-Core1
  ip address 10.100.10.13 255.255.255.252
 !
 interface Serial1/0
  description MPLS para CID-GW
+ no ip address
+ encapsulation ppp
  mpls ip
- ip address 10.100.3.1 255.255.255.252
 !
-interface Serial1/1
- description Ligacao Frame-Relay para PPPoFR
- encapsulation frame-relay
- frame-relay intf-type dce
+interface Vlan410
+ description Termination for CID VLAN 410
+ ip address 194.65.247.254 255.255.255.192 ! Gateway na RSC
 !
-! --- Frame Relay DLCI Mapping to PPP ---
-connect ppp-ecma Serial1/1 401 ppp virtual-template 4
-connect ppp-bcrd Serial1/1 501 ppp virtual-template 5
+! --- L2VPN xconnect ---
+interface Serial1/0
+ xconnect 10.100.3.2 410 encapsulation mpls pw-class AToM-PW
 !
 ! --- OSPF Configuration ---
 router ospf 1
  router-id 1.1.1.5
- network 10.100.3.0 0.0.0.3 area 0
- network 10.100.4.0 0.0.0.3 area 0
- network 10.100.5.0 0.0.0.3 area 0
  network 10.100.10.12 0.0.0.3 area 0
+ network 194.65.247.192 0.0.0.63 area 0 ! Anuncia a rede terminada
  area 0 authentication message-digest
+!
+line vty 1 15
+ transport input none
 !
 end

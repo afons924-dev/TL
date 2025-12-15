@@ -56,4 +56,7 @@ interface Ethernet0/2
 interface Ethernet0/3
  ip ospf message-digest-key 1 md5 My!S3cur3!K3y
 !
+line vty 1 15
+ transport input none
+!
 end

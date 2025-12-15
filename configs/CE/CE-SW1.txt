@@ -4,8 +4,7 @@ hostname CE-SW1
 !
 spanning-tree mode rstp
 spanning-tree portfast bpduguard default
-spanning-tree guard root
-spanning-tree guard loop
+spanning-tree loopguard default
 !
 ! --- VLAN Configuration ---
 vlan 110
@@ -22,6 +21,7 @@ interface GigabitEthernet0/1
 ! Access Port Example for VLAN 110
 interface Ethernet0/1
  switchport mode access
+ spanning-tree guard root
  switchport access vlan 110
  switchport port-security
  switchport port-security maximum 2
@@ -32,11 +32,15 @@ interface Ethernet0/1
 ! Access Port Example for VLAN 111
 interface Ethernet0/2
  switchport mode access
+ spanning-tree guard root
  switchport access vlan 111
  switchport port-security
  switchport port-security maximum 2
  switchport port-security mac-address sticky
  switchport port-security violation restrict
  spanning-tree portfast
+!
+line vty 1 15
+ transport input none
 !
 end

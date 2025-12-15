@@ -1,8 +1,10 @@
-! CID-GW (MPLS PE - Corrected)
+! CID-GW (MPLS AToM Spoke - Corrected)
 !
 hostname CID-GW
 !
 no ip domain-lookup
+!
+mpls label protocol ldp
 !
 ! --- Security Policies ---
 service password-encryption
@@ -11,25 +13,34 @@ banner motd # Bem-vindo ao CID-GW #
 ip domain-name itc.local
 crypto key generate rsa modulus 1024
 !
-username admin privilege 15 secret My!Adm1n!Pass
+! --- AToM L2VPN Configuration ---
+pseudowire-class AToM-PW
+ encapsulation mpls
 !
 ! --- Interfaces ---
 interface Serial1/0
- description Ligacao MPLS para RSC-GW2
+ description MPLS para RSC-GW2
+ no ip address
  encapsulation ppp
  mpls ip
- ip address 10.100.3.2 255.255.255.252
 !
-interface Ethernet0/0
- description Ligacao para a rede interna do CID
- ip address 10.100.13.1 255.255.255.252
+interface Ethernet1/0
+ description Access Port para a VLAN 410 do CID
+ switchport
+ switchport mode access
+ switchport access vlan 410
 !
-! --- OSPF Configuration ---
+! --- L2VPN xconnect ---
+interface Serial1/0
+ xconnect 10.100.3.1 410 encapsulation mpls pw-class AToM-PW
+!
+! --- OSPF (somente para a rede de gestao) ---
 router ospf 1
  router-id 5.5.5.1
- network 10.100.3.0 0.0.0.3 area 0
  network 10.100.13.0 0.0.0.3 area 0
- network 194.65.247.0 0.0.0.255 area 0
  area 0 authentication message-digest
+!
+line vty 1 15
+ transport input none
 !
 end

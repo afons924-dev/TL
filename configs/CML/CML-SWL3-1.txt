@@ -35,6 +35,7 @@ interface Vlan113
 !
 ! --- OSPF Configuration for LAN routing ---
 router ospf 1
+ network 10.100.16.4 0.0.0.3 area 0
  router-id 8.8.8.1
  network 194.65.249.0 0.0.0.255 area 0
  area 0 authentication message-digest
@@ -44,5 +45,15 @@ interface GigabitEthernet1/0
  no switchport
  ip address 10.100.16.2 255.255.255.252
  ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+! --- Downlink to Internal Routers ---
+interface GigabitEthernet1/1
+ description Ligacao para CML-R1
+ no switchport
+ ip address 10.100.16.6 255.255.255.252
+ ip ospf message-digest-key 1 md5 My!S3cur3!K3y
+!
+line vty 1 15
+ transport input none
 !
 end
